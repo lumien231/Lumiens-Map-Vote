@@ -48,7 +48,9 @@ end
 function CoolDownDoStuff()
     cooldownnum = MapVote.Config.MapsBeforeRevote or 3
 
-    if table.getn(recentmaps) == cooldownnum then table.remove(recentmaps) end
+    while table.getn(recentmaps) > cooldownnum do
+        table.remove(recentmaps)
+    end
 
     local curmap = game.GetMap():lower() .. ".bsp"
 
