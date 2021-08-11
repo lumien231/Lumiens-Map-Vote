@@ -45,6 +45,19 @@ else
     MapVote.Config = {}
 end
 
+local excludemaps
+if file.Exists( "ulx/votemaps.txt", "DATA" ) then
+    excludemaps = string.Split(file.Read("ulx/votemaps.txt", "DATA"), "\n")
+    for idx=#excludemaps,1,-1 do
+        local line = excludemaps[idx];
+        if string.len(line) == 0 or string.StartWith(line, ";") then
+            table.remove(excludemaps, idx);
+        end
+    end
+else
+    excludemaps = {}
+end
+
 function CoolDownDoStuff()
     cooldownnum = MapVote.Config.MapsBeforeRevote or 3
 
@@ -103,6 +116,20 @@ function MapVote.Start(length, current, limit, prefix, callback)
 
     local amt = 0
 
+    -- Remove the maps that are explicitly excluded
+    for _, v in pairs(excludemaps) do
+        local excludemap = string.Trim(v, "\r")
+        if table.HasValue(maps, excludemap..".bsp") then
+            for _k=#maps,1,-1 do
+                local _v = maps[_k];
+                if _v == excludemap..".bsp" then
+                    table.remove(maps, _k);
+                    break
+                end
+            end
+        end
+    end
+    
     for k, map in RandomPairs(maps) do
         local mapstr = map:sub(1, -5):lower()
         local plays = playCount[map]
