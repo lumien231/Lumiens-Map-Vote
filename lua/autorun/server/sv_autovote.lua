@@ -29,7 +29,15 @@ hook.Add("Initialize", "AutoTTTMapVote", function()
     if GAMEMODE_NAME == "deathrun" then
         function RTV.Start() MapVote.Start(nil, nil, nil, nil) end
     end
+-- hide and seek support
+    if GAMEMODE_NAME == "hideandseek" then
+        hook.Add("HASVotemapStart", "MAPVOTEHNS_LOADMAP", function()
+       	     MapVote.Start(nil, nil, nil, nil)
+        	 return true
+        end)
+    end
 
+        
     if GAMEMODE_NAME == "zombiesurvival" then
         hook.Add("LoadNextMap", "MAPVOTEZS_LOADMAP", function()
             MapVote.Start(nil, nil, nil, nil)
